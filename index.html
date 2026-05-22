@@ -4,13 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Carreira do Futuro | Ferramentas e Atalhos Profissionais</title>
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
     <header class="cabecalho-site">
         <div class="container nav-bar">
-            <h1 class="logotipo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Portal<span>Carreira do Futuro</span></h1>
+            <h1 class="logotipo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" tabindex="0" role="button" aria-label="Voltar ao topo">Portal<span>Carreira do Futuro</span></h1>
+            
+            <div class="controles-a11y" aria-label="Controles de Acessibilidade">
+                <button id="btn-fonte-menos" class="btn-a11y" aria-label="Diminuir tamanho da fonte">A-</button>
+                <button id="btn-fonte-mais" class="btn-a11y" aria-label="Aumentar tamanho da fonte">A+</button>
+                <button id="btn-tema" class="btn-a11y" aria-label="Alternar tema claro e escuro">🌓</button>
+            </div>
         </div>
     </header>
 
@@ -26,6 +32,8 @@
                     <button type="submit" class="btn-busca" aria-label="Realizar busca">Buscar</button>
                 </form>
             </div>
+
+            <nav id="links-rapidos" class="links-rapidos-container" aria-label="Categorias de ferramentas"></nav>
         </section>
 
         <div id="container-categorias-home"></div>
@@ -35,10 +43,12 @@
         <div id="modal-ferramenta" class="modal-content hidden" role="dialog" aria-modal="true" aria-labelledby="artigo-titulo">
             <button class="btn-fechar" onclick="fecharTodosModais()" aria-label="Fechar janela">✕</button>
             
-            <div class="modal-header">
-                <span id="artigo-emoji" class="emoji-gigante" aria-hidden="true"></span>
-                <h2 id="artigo-titulo"></h2>
-                <span id="artigo-categoria" class="tag-categoria"></span>
+            <div class="modal-header-compacto">
+                <span id="artigo-emoji" class="emoji-medio" aria-hidden="true"></span>
+                <div>
+                    <h2 id="artigo-titulo"></h2>
+                    <span id="artigo-categoria" class="tag-categoria"></span>
+                </div>
             </div>
 
             <div class="dor-box">
@@ -51,22 +61,24 @@
             </div>
 
             <div class="area-adsense ads-modal">
-                <p class="ads-label">Espaço Publicitário (AdSense Conversão)</p>
+                <p class="ads-label">Espaço Publicitário</p>
             </div>
 
-            <div style="text-align: center; margin-top: 40px;">
+            <div style="text-align: center; margin-top: 24px;">
                 <a id="artigo-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-primario">Acessar Plataforma Oficial</a>
             </div>
         </div>
     </div>
 
+    <button id="btn-voltar-topo" class="btn-voltar-topo hidden" aria-label="Voltar ao topo da página">↑</button>
+
     <footer class="rodape-site">
         <div class="container">
             <p><strong>Portal Carreira do Futuro</strong> &copy; 2026. Construído para o trabalhador moderno.</p>
-            <p>Nenhuma ferramenta listada patrocinou nossa análise. Nossa monetização vem exclusivamente dos anúncios exibidos.</p>
+            <p>Nossa monetização vem exclusivamente dos anúncios exibidos.</p>
         </div>
     </footer>
 
-    <script src="script.js?v=5"></script>
+    <script src="script.js?v=6"></script>
 </body>
 </html>
