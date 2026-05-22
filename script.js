@@ -1,7 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
     let baseDeDados = [];
+    const htmlElement = document.documentElement;
 
-    // 1. Carrega os Dados do JSON
+    // --- 1. CONTROLES DE ACESSIBILIDADE ---
+    // Tema (Dark/Light)
+    const temaSalvo = localStorage.getItem('tema');
+    if (temaSalvo === 'dark') htmlElement.setAttribute('data-theme', 'dark');
+
+    document.getElementById('btn-tema').addEventListener('click', () => {
+        const temaAtual = htmlElement.getAttribute('data-theme');
+        if (temaAtual === 'dark') {
+            htmlElement.removeAttribute('data-theme');
+            localStorage.setItem('tema', 'light');
+        } else {
+            htmlElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('tema', 'dark');
+        }
+    });
+
+    // Tamanho da Fonte
+    let fontScale = parseInt(localStorage.getItem('fontScale')) || 100;
+    atualizarFonte();
+
+    document.getElementById('btn-fonte-mais').addEventListener('click', () => {
+        if (fontScale < 130) { fontScale += 10; atualizarFonte(); }
+    });
+    
+    document.getElementById('btn-fonte-menos').addEventListener('click', () => {
+        if (fontScale > 90) { fontScale -= 10; atualizarFonte(); }
+    });
+
+    function atualizarFonte() {
+        htmlElement.style.fontSize = fontScale + '%';
+        localStorage.setItem('fontScale', fontScale);
+    }
+
+    // --- 2. CARREGAMENTO E RENDERIZAÇÃO ---
     fetch('dados.json')
         .then(response => response.json())
         .then(data => {
@@ -10,10 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(erro => console.error('Erro ao carregar o JSON:', erro));
 
-    // 2. Renderiza a Home Completa com Anúncios
     function renderizarHome(ferramentas) {
         const container = document.getElementById('container-categorias-home');
+        const linksRapidos = document.getElementById('links-rapidos');
         container.innerHTML = ''; 
+        linksRapidos.innerHTML = '';
         
         const categoriasInfo = ferramentas.reduce((acc, f) => {
             if (!acc[f.categoria]) acc[f.categoria] = [];
@@ -26,9 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
         nomesCategorias.forEach((cat, index) => {
             const itens = categoriasInfo[cat];
             const emojiCat = itens[0].emoji;
+            const catId = `cat-${index}`; // ID para a âncora
 
+            // Cria o botão de Link Rápido no Topo
+            const btnLink = document.createElement('button');
+            btnLink.className = 'btn-link-rapido';
+            btnLink.innerHTML = `${emojiCat} ${cat}`;
+            btnLink.onclick = () => document.getElementById(catId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+            linksRapidos.appendChild(btnLink);
+
+            // Cria a Seção
             const section = document.createElement('section');
             section.className = 'sessao-categoria';
+            section.id = catId; // Atribui o ID
             
             section.innerHTML = `
                 <h2 class="sessao-titulo">${emojiCat} ${cat}</h2>
@@ -42,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <h3>${item.nome}</h3>
                             </div>
                             <p>${item.dor_resolvida}</p>
-                            <span style="color: var(--accent-primary); font-weight: 600; margin-top: auto;">Ver análise completa →</span>
+                            <span class="btn-card-link">Ver análise completa →</span>
                         </article>
                         `;
                     }).join('')}
@@ -50,18 +95,21 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             container.appendChild(section);
 
-            // INJETA O ANÚNCIO (AdSense Divisória)
+            // Injeta AdSense entre as categorias
             if (index < nomesCategorias.length - 1) {
                 const adsHTML = document.createElement('div');
                 adsHTML.className = 'area-adsense ads-home';
-                adsHTML.innerHTML = '<p class="ads-label">Espaço Publicitário (AdSense Divisória)</p>';
+                adsHTML.innerHTML = '<p class="ads-label">Espaço Publicitário</p>';
                 container.appendChild(adsHTML);
             }
         });
     }
 
-    // 3. Abre o Modal e Injeta o Rastreio (Agora com a nova marca)
+    // --- 3. CONTROLE DOS MODAIS ---
+    let elementoAnteriorFocado;
+
     window.abrirModalFerramenta = function(id) {
+        elementoAnteriorFocado = document.activeElement; // Salva o foco para WCAG
         const ferramenta = baseDeDados.find(f => f.id === id);
         if (!ferramenta) return;
         
@@ -71,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('artigo-dor').textContent = ferramenta.dor_resolvida;
         document.getElementById('artigo-descricao').textContent = ferramenta.descricao;
         
-        // Rastreio atualizado para a nova marca
         try {
             const urlFormatada = new URL(ferramenta.url);
             urlFormatada.searchParams.append('ref', 'portalcarreiradofuturo');
@@ -81,17 +128,17 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('artigo-link').href = ferramenta.url;
         }
 
-        mostrarOverlay();
-        document.getElementById('modal-ferramenta').classList.remove('hidden');
-        document.getElementById('modal-ferramenta').scrollTo(0, 0); 
-    };
-
-    // 4. Funções de Controle do Modal e Acessibilidade (WCAG)
-    window.mostrarOverlay = function() {
         const overlay = document.getElementById('modal-overlay');
+        const modal = document.getElementById('modal-ferramenta');
+        
         overlay.classList.remove('hidden');
         overlay.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('modal-open'); 
+        modal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+        
+        // Foca no modal para leitura
+        modal.focus();
+        modal.scrollTo(0, 0); 
     };
 
     window.fecharTodosModais = function() {
@@ -100,18 +147,30 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.setAttribute('aria-hidden', 'true');
         document.getElementById('modal-ferramenta').classList.add('hidden');
         document.body.classList.remove('modal-open');
+        
+        // Devolve o foco
+        if (elementoAnteriorFocado) elementoAnteriorFocado.focus();
     };
 
     window.fecharAoClicarFora = function(event) {
-        if (event.target.id === 'modal-overlay') {
-            fecharTodosModais();
-        }
+        if (event.target.id === 'modal-overlay') fecharTodosModais();
     };
 
-    // Acessibilidade: Fecha o modal com a tecla ESC
     document.addEventListener('keydown', function(event) {
-        if (event.key === "Escape") {
-            fecharTodosModais();
+        if (event.key === "Escape") fecharTodosModais();
+    });
+
+    // --- 4. BOTÃO VOLTAR AO TOPO ---
+    const btnTopo = document.getElementById('btn-voltar-topo');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 500) {
+            btnTopo.classList.remove('hidden');
+        } else {
+            btnTopo.classList.add('hidden');
         }
+    });
+
+    btnTopo.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 });
