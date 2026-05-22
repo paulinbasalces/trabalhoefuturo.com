@@ -1,11 +1,213 @@
-/* Adicione isso ao final do seu style.css atual */
+/* =========================================
+   SISTEMA DE DESIGN PREMIUM: GLASS & GLOW + MODAIS
+   ========================================= */
 
-/* Bloqueia rolagem do fundo quando modal está aberto */
-body.modal-open {
-  overflow: hidden; 
+:root {
+  /* Paleta Elevada */
+  --bg-base: #f8fafc;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  
+  /* Cores de Ação */
+  --accent-primary: #e05c36; /* Terracota vibrante */
+  --accent-secondary: #6366f1; /* Índigo profundo */
+  
+  /* Propriedades do Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 8px 32px rgba(15, 23, 42, 0.04);
+  
+  /* Curvas de Animação */
+  --spring-easing: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Fundo Escuro com Desfoque (Glass Overlay) */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =========================================
+   BASE E FUNDO (Mesh Gradient)
+   ========================================= */
+body {
+  background-color: var(--bg-base);
+  background-image: 
+    radial-gradient(at 10% 10%, rgba(224, 92, 54, 0.05) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+    radial-gradient(at 50% 90%, rgba(15, 23, 42, 0.03) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--text-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.hidden { display: none !important; }
+
+/* =========================================
+   CABEÇALHO FLUTUANTE
+   ========================================= */
+.cabecalho-site {
+  position: sticky;
+  top: 20px;
+  z-index: 100;
+  margin: 0 24px;
+}
+
+.nav-bar {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--glass-shadow);
+}
+
+.logotipo {
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--accent-primary);
+  cursor: pointer;
+}
+.logotipo span { color: var(--text-main); }
+
+/* =========================================
+   HERO SECTION
+   ========================================= */
+.hero {
+  text-align: center;
+  padding: 8vh 0 6vh;
+  animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero h2 {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  background: linear-gradient(135deg, var(--text-main) 0%, var(--accent-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* =========================================
+   GRID E CARDS (Glassmorphism 3D)
+   ========================================= */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding-bottom: 60px;
+}
+
+.card {
+  background: linear-gradient(145deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.4) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 32px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s var(--spring-easing);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+  opacity: 0; 
+  transform: translateY(30px);
+  animation: fadeUp 0.8s var(--spring-easing) forwards;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08), 0 0 0 1px var(--accent-primary);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.card-emoji {
+  font-size: 2.2rem;
+  background: #fff;
+  padding: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.card p {
+  font-size: 1rem;
+  color: var(--text-muted);
+  flex-grow: 1;
+  margin-bottom: 24px;
+}
+
+/* =========================================
+   ESTRUTURAS INTERNAS (Subpáginas/Modais)
+   ========================================= */
+.dor-box {
+  background: linear-gradient(90deg, rgba(224, 92, 54, 0.1) 0%, transparent 100%);
+  border-left: 4px solid var(--accent-primary);
+  padding: 24px;
+  border-radius: 0 16px 16px 0;
+  margin: 32px 0;
+}
+.dor-box strong { color: var(--accent-primary); display: block; margin-bottom: 8px; }
+
+.btn-primario {
+  display: inline-block;
+  background: var(--text-main);
+  color: #fff;
+  text-decoration: none;
+  padding: 18px 40px;
+  border-radius: 100px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+}
+.btn-primario:hover {
+  background: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(224, 92, 54, 0.3);
+}
+
+/* =========================================
+   SISTEMA DE MODAIS (Pop-ups de Conversão)
+   ========================================= */
+body.modal-open { overflow: hidden; }
+
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -21,14 +223,13 @@ body.modal-open {
   animation: fadeIn 0.3s ease forwards;
 }
 
-/* Janela do Modal */
 .modal-content {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(24px);
   width: 100%;
   max-width: 900px;
   max-height: 90vh;
-  overflow-y: auto; /* Rolagem interna apenas no modal */
+  overflow-y: auto;
   border-radius: 32px;
   padding: 40px;
   box-shadow: 0 32px 64px rgba(0,0,0,0.15);
@@ -38,7 +239,6 @@ body.modal-open {
   animation: scaleUp 0.4s var(--spring-easing) forwards;
 }
 
-/* Botões de Controle do Modal */
 .btn-fechar {
   position: absolute;
   top: 24px; right: 24px;
@@ -68,27 +268,35 @@ body.modal-open {
 }
 .btn-voltar:hover { color: var(--accent-primary); }
 
-/* Ajustes Internos do Modal */
 .modal-header { text-align: center; margin-bottom: 32px; }
 .emoji-gigante { font-size: 3.5rem; display: block; margin-bottom: 16px; }
 .tag-categoria { background: #e0e7ff; color: var(--accent-secondary); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; display: inline-block; margin-top: 12px; }
 
-/* Ads dentro do modal */
-.ads-modal {
-  margin: 32px 0;
-  padding: 24px;
-  background: rgba(15, 23, 42, 0.03);
+/* =========================================
+   ZONAS DE ADSENSE
+   ========================================= */
+.area-adsense {
+  background: rgba(15, 23, 42, 0.02);
+  border: 1px dashed rgba(15, 23, 42, 0.15);
+  text-align: center;
+  padding: 30px 20px;
+  border-radius: 16px;
 }
+.ads-modal { margin: 32px 0; }
+.ads-label { font-size: 0.7rem; color: #999; text-transform: uppercase; letter-spacing: 2px; }
 
-/* Ocultar elementos via JS */
-.hidden { display: none !important; }
-
-/* Keyframes de Animação dos Modais */
+/* =========================================
+   ANIMAÇÕES E RESPONSIVIDADE
+   ========================================= */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 @keyframes fadeIn { to { opacity: 1; } }
 @keyframes scaleUp { to { transform: scale(1) translateY(0); } }
 
-/* Ajuste Responsivo para o Modal */
 @media (max-width: 768px) {
   .modal-content { padding: 24px; border-radius: 24px; }
   .btn-fechar { top: 16px; right: 16px; }
+  .grid-cards { grid-template-columns: 1fr; }
 }
