@@ -4,45 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Curadoria | Ferramentas e Atalhos</title>
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
     <header class="cabecalho-site">
         <div class="container nav-bar">
-            <h1 class="logotipo" onclick="fecharTodosModais()">Portal<span>Curadoria</span></h1>
+            <h1 class="logotipo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Portal<span>Curadoria</span></h1>
         </div>
     </header>
 
     <main class="container" id="conteudo-principal">
         <section class="hero">
             <h2>Escolha sua jornada</h2>
-            <p>Selecione uma categoria abaixo para explorar ferramentas e conteúdos gratuitos.</p>
+            <p>Explore nossa curadoria de ferramentas e conteúdos gratuitos para alavancar sua carreira.</p>
         </section>
 
-        <div id="grid-categorias-home" class="grid-cards"></div>
+        <div id="container-categorias-home"></div>
     </main>
 
     <div id="modal-overlay" class="modal-overlay hidden" onclick="fecharAoClicarFora(event)">
-        
-        <div id="modal-categoria" class="modal-content hidden">
-            <button class="btn-fechar" onclick="fecharTodosModais()">✕</button>
-            
-            <div class="modal-header">
-                <span id="cat-emoji" class="emoji-gigante"></span>
-                <h2 id="cat-titulo"></h2>
-            </div>
-
-            <div class="area-adsense ads-modal">
-                <p class="ads-label">Espaço Publicitário (AdSense Topo)</p>
-            </div>
-
-            <div id="grid-ferramentas-modal" class="grid-cards">
-                </div>
-        </div>
-
         <div id="modal-ferramenta" class="modal-content hidden">
-            <button class="btn-voltar" onclick="voltarParaCategoria()">← Voltar para a lista</button>
             <button class="btn-fechar" onclick="fecharTodosModais()">✕</button>
             
             <div class="modal-header">
@@ -57,7 +39,7 @@
             </div>
 
             <div class="artigo-corpo">
-                <p id="artigo-descricao" style="font-size: 1.1rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px;"></p>
+                <p id="artigo-descricao"></p>
             </div>
 
             <div class="area-adsense ads-modal">
@@ -68,9 +50,15 @@
                 <a id="artigo-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-primario">Acessar Plataforma Oficial</a>
             </div>
         </div>
-
     </div>
 
-    <script src="script.js?v=3"></script>
+    <footer class="rodape-site">
+        <div class="container">
+            <p><strong>Portal Curadoria</strong> &copy; 2026. Construído para o trabalhador moderno.</p>
+            <p>Nenhuma ferramenta listada patrocinou nossa análise. Nossa monetização vem exclusivamente dos anúncios exibidos.</p>
+        </div>
+    </footer>
+
+    <script src="script.js?v=4"></script>
 </body>
 </html>
