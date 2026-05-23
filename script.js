@@ -1,172 +1,155 @@
 document.addEventListener('DOMContentLoaded', () => {
     let baseDeDados = [];
-    const htmlElement = document.documentElement;
-
-    // --- 1. A11Y E PREFERÊNCIAS ---
-    const temaSalvo = localStorage.getItem('tema');
-    if (temaSalvo === 'dark') htmlElement.setAttribute('data-theme', 'dark');
-
-    document.getElementById('btn-tema').addEventListener('click', () => {
-        const temaAtual = htmlElement.getAttribute('data-theme');
-        if (temaAtual === 'dark') {
-            htmlElement.removeAttribute('data-theme');
-            localStorage.setItem('tema', 'light');
-        } else {
-            htmlElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('tema', 'dark');
-        }
-    });
-
-    let fontScale = parseInt(localStorage.getItem('fontScale')) || 100;
-    atualizarFonte();
-    document.getElementById('btn-fonte-mais').addEventListener('click', () => { if (fontScale < 130) { fontScale += 10; atualizarFonte(); } });
-    document.getElementById('btn-fonte-menos').addEventListener('click', () => { if (fontScale > 90) { fontScale -= 10; atualizarFonte(); } });
-    function atualizarFonte() { htmlElement.style.fontSize = fontScale + '%'; localStorage.setItem('fontScale', fontScale); }
-
-    // --- 2. RENDERIZAÇÃO ---
+    
+    // 1. Carregamento dos dados
     fetch('dados.json')
         .then(response => response.json())
         .then(data => {
             baseDeDados = data.ferramentas;
-            renderizarHome(baseDeDados);
-        });
+            renderizarInterface(baseDeDados);
+        })
+        .catch(erro => console.error('Erro ao carregar o JSON:', erro));
 
-    function renderizarHome(ferramentas) {
-        const container = document.getElementById('container-categorias-home');
-        const linksRapidos = document.getElementById('links-rapidos');
-        container.innerHTML = ''; linksRapidos.innerHTML = '';
+    // 2. Renderização do Bento Grid e das Categorias
+    function renderizarInterface(ferramentas) {
+        const bentoMenu = document.getElementById('bento-menu');
+        const listaFerramentas = document.getElementById('lista-ferramentas');
         
+        bentoMenu.innerHTML = ''; 
+        listaFerramentas.innerHTML = '';
+        
+        // Agrupando por categoria (Garantindo a regra de 8 categorias)
         const categoriasInfo = ferramentas.reduce((acc, f) => {
             if (!acc[f.categoria]) acc[f.categoria] = [];
-            acc[f.categoria].push(f); return acc;
+            acc[f.categoria].push(f);
+            return acc;
         }, {});
 
         Object.keys(categoriasInfo).forEach((cat, index) => {
             const itens = categoriasInfo[cat];
             const emojiCat = itens[0].emoji;
-            const catId = `cat-${index}`;
+            const anchorId = `cat-${index}`;
 
-            const btnLink = document.createElement('div');
-            btnLink.className = 'bento-card';
-            btnLink.innerHTML = `<span class="bento-emoji">${emojiCat}</span><span class="bento-title">${cat}</span><span class="bento-subtitle">${itens.length} recursos</span>`;
-            btnLink.onclick = () => document.getElementById(catId).scrollIntoView({ behavior: 'smooth', block: 'start' });
-            linksRapidos.appendChild(btnLink);
+            // Criar Cartão no Bento Grid (Menu de topo)
+            const bentoCard = document.createElement('div');
+            bentoCard.className = 'bento-card';
+            bentoCard.innerHTML = `
+                <span class="bento-emoji">${emojiCat}</span>
+                <span class="bento-title">${cat}</span>
+            `;
+            // Rolagem suave até a seção
+            bentoCard.onclick = () => document.getElementById(anchorId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+            bentoMenu.appendChild(bentoCard);
 
+            // Criar Seção no Grid de Conteúdo
             const section = document.createElement('section');
             section.className = 'sessao-categoria';
-            section.id = catId; 
+            section.id = anchorId; 
+            
             section.innerHTML = `
                 <h2 class="sessao-titulo">${emojiCat} ${cat}</h2>
                 <div class="grid-cards">
-                    ${itens.map((item, itemIndex) => {
-                        const delay = (itemIndex * 0.05) + 's';
-                        return `
-                        <article class="card" style="animation-delay: ${delay};" onclick="abrirModalFerramenta('${item.id}')" tabindex="0">
-                            <div class="card-header"><span class="card-emoji" aria-hidden="true">${item.emoji}</span><h3>${item.nome}</h3></div>
+                    ${itens.map(item => `
+                        <article class="card" onclick="abrirModalFerramenta('${item.id}')">
+                            <h3>${item.nome}</h3>
                             <p>${item.dor_resolvida}</p>
-                            <span class="btn-card-link">Ver análise →</span>
-                        </article>`;
-                    }).join('')}
+                        </article>
+                    `).join('')}
                 </div>
             `;
-            container.appendChild(section);
-
-            if (index < Object.keys(categoriasInfo).length - 1) {
-                const adsHTML = document.createElement('div');
-                adsHTML.className = 'area-adsense ads-home';
-                adsHTML.innerHTML = '<p class="ads-label">Espaço Publicitário</p>';
-                container.appendChild(adsHTML);
-            }
+            listaFerramentas.appendChild(section);
         });
     }
 
-    // --- 3. MODAIS, GTM E COMPARTILHAMENTO ---
-    let elementoAnteriorFocado;
-
+    // 3. Controle dos Modais e Ferramentas de Growth
     window.abrirModalFerramenta = function(id) {
-        elementoAnteriorFocado = document.activeElement; 
         const ferramenta = baseDeDados.find(f => f.id === id);
         if (!ferramenta) return;
         
-        // Push GTM Event para rastrear cliques específicos
+        // Push GTM Event (Rastreamento Analytics)
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
-            'event': 'view_tool',
+            'event': 'tool_click',
             'tool_id': ferramenta.id,
             'tool_name': ferramenta.nome,
             'tool_category': ferramenta.categoria
         });
 
+        // Preenchimento dos dados no modal
         document.getElementById('artigo-emoji').textContent = ferramenta.emoji;
         document.getElementById('artigo-categoria').textContent = ferramenta.categoria;
         document.getElementById('artigo-titulo').textContent = ferramenta.nome;
         document.getElementById('artigo-dor').textContent = ferramenta.dor_resolvida;
         document.getElementById('artigo-descricao').textContent = ferramenta.descricao;
         
-        let urlFinal = ferramenta.url;
-        try {
-            const u = new URL(ferramenta.url);
-            u.searchParams.append('ref', 'portalcarreiradofuturo');
-            u.searchParams.append('utm_source', 'portalcarreiradofuturo');
-            urlFinal = u.toString();
-        } catch(e){}
-        document.getElementById('artigo-link').href = urlFinal;
+        // Link de destino
+        document.getElementById('artigo-link').href = ferramenta.url;
 
-        // Lógica de Compartilhamento UX 2026
+        // REPORT LINK QUEBRADO (Custo Zero com mailto pré-formatado)
+        const emailSuporte = "suporte@carreiradofuturo.com"; // Substitua pelo seu e-mail
+        const assunto = encodeURIComponent(`Link Quebrado: ${ferramenta.nome}`);
+        const corpoEmail = encodeURIComponent(`Olá equipe,\n\nO link da ferramenta "${ferramenta.nome}" apresenta erro ao ser acessado.\n\nURL cadastrada: ${ferramenta.url}\n\nPor favor, verifiquem.`);
+        document.getElementById('btn-reportar').href = `mailto:${emailSuporte}?subject=${assunto}&body=${corpoEmail}`;
+
+        // LÓGICA DE COMPARTILHAMENTO (Viralidade)
         const containerBotoes = document.getElementById('botoes-compartilhamento');
-        containerBotoes.innerHTML = ''; // Limpa botões antigos
+        containerBotoes.innerHTML = ''; 
         
-        const textoShare = `Descobri essa ferramenta incrível: ${ferramenta.nome} - ${ferramenta.descricao}`;
-        const linkSite = window.location.href;
+        const textoShare = `Olha essa ferramenta para a carreira: ${ferramenta.nome} - ${ferramenta.descricao}`;
+        const linkSite = window.location.href; // URL do seu próprio portal
+        const textoFormatado = encodeURIComponent(`${textoShare}\n\nAcesse: ${linkSite}`);
+        const linkSiteFormatado = encodeURIComponent(linkSite);
 
-        // Verifica se o celular suporta compartilhamento nativo de OS
+        // UX 2026: Web Share API nativa (Para Mobile)
         if (navigator.share) {
             const btnNative = document.createElement('button');
-            btnNative.className = 'btn-share native-share';
-            btnNative.innerText = '📤 Compartilhar via celular';
+            btnNative.className = 'btn-share native';
+            btnNative.innerText = '📤 Compartilhar (Nativo)';
             btnNative.onclick = () => {
-                navigator.share({ title: ferramenta.nome, text: textoShare, url: linkSite })
-                .catch(console.error);
+                navigator.share({ title: ferramenta.nome, text: textoShare, url: linkSite }).catch(console.error);
             };
             containerBotoes.appendChild(btnNative);
         } else {
-            // Fallback para Desktop com botões individuais robustos
+            // Fallback robusto para Desktop: Todas as redes sociais solicitadas
             const redes = [
-                { id: 'zap', nome: 'WhatsApp', cor: 'zap', url: `https://api.whatsapp.com/send?text=${encodeURIComponent(textoShare + ' ' + linkSite)}` },
-                { id: 'in', nome: 'LinkedIn', cor: 'in', url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(linkSite)}` },
-                { id: 'x', nome: 'X', cor: 'x', url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(textoShare)}&url=${encodeURIComponent(linkSite)}` },
-                { id: 'bsky', nome: 'Bluesky', cor: 'bsky', url: `https://bsky.app/intent/compose?text=${encodeURIComponent(textoShare + ' ' + linkSite)}` },
-                { id: 'thr', nome: 'Threads', cor: 'thr', url: `https://www.threads.net/intent/post?text=${encodeURIComponent(textoShare + ' ' + linkSite)}` }
+                { id: 'whatsapp', nome: 'WhatsApp', url: `https://api.whatsapp.com/send?text=${textoFormatado}` },
+                { id: 'linkedin', nome: 'LinkedIn', url: `https://www.linkedin.com/sharing/share-offsite/?url=${linkSiteFormatado}` },
+                { id: 'bluesky', nome: 'Bluesky', url: `https://bsky.app/intent/compose?text=${textoFormatado}` },
+                { id: 'threads', nome: 'Threads', url: `https://www.threads.net/intent/post?text=${textoFormatado}` },
+                { id: 'x', nome: 'X', url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(textoShare)}&url=${linkSiteFormatado}` },
+                { id: 'telegram', nome: 'Telegram', url: `https://t.me/share/url?url=${linkSiteFormatado}&text=${encodeURIComponent(textoShare)}` }
             ];
 
             redes.forEach(rede => {
                 const b = document.createElement('button');
-                b.className = `btn-share ${rede.cor}`;
+                b.className = `btn-share ${rede.id}`;
                 b.innerText = rede.nome;
                 b.onclick = () => window.open(rede.url, '_blank');
                 containerBotoes.appendChild(b);
             });
         }
 
-        const overlay = document.getElementById('modal-overlay');
-        const modal = document.getElementById('modal-ferramenta');
-        overlay.classList.remove('hidden'); overlay.setAttribute('aria-hidden', 'false');
-        modal.classList.remove('hidden'); document.body.classList.add('modal-open');
-        modal.focus(); modal.scrollTo(0, 0); 
+        // Exibir Modal
+        document.getElementById('modal-overlay').classList.remove('hidden');
+        document.body.classList.add('modal-open');
     };
 
+    // Fechamento de Modais
     window.fecharTodosModais = function() {
         document.getElementById('modal-overlay').classList.add('hidden');
-        document.getElementById('modal-ferramenta').classList.add('hidden');
         document.body.classList.remove('modal-open');
-        if (elementoAnteriorFocado) elementoAnteriorFocado.focus();
     };
 
-    window.fecharAoClicarFora = function(e) { if (e.target.id === 'modal-overlay') fecharTodosModais(); };
-    document.addEventListener('keydown', (e) => { if (e.key === "Escape") fecharTodosModais(); });
-
-    // --- 4. TOP BUTTON ---
-    const btnTopo = document.getElementById('btn-voltar-topo');
-    window.addEventListener('scroll', () => { window.scrollY > 500 ? btnTopo.classList.remove('hidden') : btnTopo.classList.add('hidden'); });
-    btnTopo.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    window.fecharAoClicarFora = function(event) {
+        if (event.target.id === 'modal-overlay') {
+            fecharTodosModais();
+        }
+    };
+    
+    // Acessibilidade (Tecla ESC fecha o modal)
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") {
+            fecharTodosModais();
+        }
+    });
 });

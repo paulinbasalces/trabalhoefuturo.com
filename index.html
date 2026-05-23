@@ -1,56 +1,50 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Carreira do Futuro | Ferramentas e Atalhos Profissionais</title>
-    <link rel="stylesheet" href="style.css?v=10">
+    <title>Portal Carreira do Futuro | Ferramentas e Produtividade</title>
+    <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <header class="cabecalho-site">
         <div class="container nav-bar">
-            <h1 class="logotipo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" tabindex="0" role="button" aria-label="Voltar ao topo">Portal<span>Carreira do Futuro</span></h1>
-            <div class="controles-a11y" aria-label="Controles de Acessibilidade">
-                <button id="btn-fonte-menos" class="btn-a11y" aria-label="Diminuir tamanho da fonte">A-</button>
-                <button id="btn-fonte-mais" class="btn-a11y" aria-label="Aumentar tamanho da fonte">A+</button>
-                <button id="btn-tema" class="btn-a11y" aria-label="Alternar tema claro e escuro">🌓</button>
-            </div>
+            <h1 class="logotipo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" role="button" tabindex="0">Portal<span>Carreira do Futuro</span></h1>
         </div>
     </header>
 
     <main class="container" id="conteudo-principal">
+        
         <section class="hero">
             <h2 class="hero-title">Escolha sua jornada</h2>
-            <p>Explore nossa curadoria massiva de ferramentas gratuitas para alavancar sua trajetória profissional.</p>
+            <p class="hero-subtitle">Curadoria de ferramentas gratuitas para alavancar sua trajetória profissional.</p>
             
             <div class="busca-container">
-                <form action="https://www.google.com/search" method="get" target="_blank" class="busca-form" role="search">
-                    <label for="campo-busca" class="sr-only">Pesquisar no site</label>
-                    <input type="search" id="campo-busca" name="q" placeholder="Pesquisar ferramentas, cálculos, vagas..." required>
+                <form action="https://www.google.com/search" method="get" target="_blank" class="busca-form">
+                    <input type="search" name="q" placeholder="Pesquisar ferramentas, cálculos, vagas..." aria-label="Pesquisar" required>
                     <button type="submit" class="btn-busca">Buscar</button>
                 </form>
             </div>
             
-            <nav id="links-rapidos" class="bento-grid-container" aria-label="Acesso rápido às categorias"></nav>
+            <nav id="bento-menu" class="bento-grid-container" aria-label="Navegação rápida por categorias"></nav>
         </section>
 
-        <div class="area-adsense ads-vip container">
-            <p class="ads-label">Espaço Publicitário em Destaque</p>
-        </div>
+        <div class="espaco-respiro"></div>
 
-        <div id="container-categorias-home"></div>
+        <div class="area-adsense ads-vip">
+            <p class="ads-label">Espaço Publicitário em Destaque</p>
+            </div>
+
+        <div id="lista-ferramentas"></div>
+        
     </main>
 
     <div id="modal-overlay" class="modal-overlay hidden" onclick="fecharAoClicarFora(event)" aria-hidden="true">
-        <div id="modal-ferramenta" class="modal-content hidden" role="dialog" aria-modal="true">
+        <div id="modal-ferramenta" class="modal-content hidden" role="dialog" aria-modal="true" aria-labelledby="artigo-titulo">
             <button class="btn-fechar" onclick="fecharTodosModais()" aria-label="Fechar janela">✕</button>
             
             <div class="modal-header-compacto">
@@ -73,35 +67,35 @@
             <div class="acoes-ferramenta">
                 <a id="artigo-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-primario">Acessar Plataforma Oficial</a>
                 
+                <a id="btn-reportar" href="#" class="btn-reportar-link">⚠️ Reportar link quebrado ou erro</a>
+                
                 <div class="share-buttons">
                     <p class="share-title">Compartilhar ferramenta útil:</p>
                     <div class="share-icons" id="botoes-compartilhamento">
                         </div>
                 </div>
             </div>
-
+            
             <div class="area-adsense ads-modal">
                 <p class="ads-label">Espaço Publicitário</p>
             </div>
         </div>
     </div>
 
-    <button id="btn-voltar-topo" class="btn-voltar-topo hidden" aria-label="Voltar ao topo da página">↑</button>
-
     <footer class="rodape-site">
         <div class="container">
             <article class="sobre-portal-rodape">
                 <h3>Hub Definitivo de Empregabilidade e Produtividade</h3>
-                <p>Encontre as melhores ferramentas online gratuitas para gestão de carreira. Nosso portal centraliza calculadoras trabalhistas exatas, inteligência artificial para o trabalho, saúde mental corporativa, finanças pessoais, cursos com certificados gratuitos e otimizadores de currículo ATS. Curadoria feita para poupar o seu tempo e alavancar resultados.</p>
+                <p>O Portal Carreira do Futuro mapeia e centraliza as melhores ferramentas online gratuitas para gestão de carreira. Oferecemos acesso facilitado a calculadoras trabalhistas exatas (rescisão, CLT vs PJ, férias), otimizadores de currículo com Inteligência Artificial (sistemas ATS), simuladores de entrevista de emprego, plataformas de produtividade corporativa, transcritores de reuniões, soluções de saúde mental no trabalho, educação financeira e os melhores cursos com certificados gratuitos. Nossa missão é poupar seu tempo e entregar tecnologia de ponta para alavancar seu posicionamento no mercado de trabalho.</p>
             </article>
 
             <div class="rodape-main">
-                <p><strong>Portal Carreira do Futuro</strong> © 2026. Feito para o trabalhador moderno.</p>
-                <p>Nossa monetização vem exclusivamente dos anúncios exibidos.</p>
+                <p><strong>Portal Carreira do Futuro</strong> &copy; 2026. Feito para o profissional do futuro.</p>
+                <p>Nossa monetização vem exclusivamente dos anúncios exibidos. Não possuímos vínculo com as marcas citadas.</p>
             </div>
         </div>
     </footer>
 
-    <script src="script.js?v=10"></script>
+    <script src="script.js?v=14"></script>
 </body>
 </html>
