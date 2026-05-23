@@ -43,48 +43,60 @@ document.addEventListener('DOMContentLoaded', () => {
             return acc;
         }, {});
 
-        Object.keys(categoriasInfo).forEach((cat, index) => {
+        const nomesCategorias = Object.keys(categoriasInfo);
+
+        nomesCategorias.forEach((cat, index) => {
             const itens = categoriasInfo[cat];
             const emojiCat = itens[0].emoji;
             const anchorId = `cat-${index}`;
 
-            // Bento Grid
+            // Bento Grid (Novo Padrão Pílula)
             const bentoCard = document.createElement('div');
             bentoCard.className = 'bento-card';
             bentoCard.innerHTML = `<span class="bento-emoji">${emojiCat}</span><span class="bento-title">${cat}</span>`;
             bentoCard.onclick = () => document.getElementById(anchorId).scrollIntoView({ behavior: 'smooth', block: 'start' });
             bentoMenu.appendChild(bentoCard);
 
-            // Geração Dinâmica dos Cards Otimizados
+            // Geração da Seção de Categoria
             const section = document.createElement('section');
             section.className = 'sessao-categoria';
             section.id = anchorId; 
             
             let htmlCards = itens.map(item => {
                 const linkSite = encodeURIComponent(window.location.href);
-                const textoShare = encodeURIComponent(`Olha essa ferramenta para a carreira: ${item.nome}`);
+                const textoShare = encodeURIComponent(`Olha essa ferramenta incrível: ${item.nome}`);
                 
                 return `
                 <article class="card">
                     <div class="card-conteudo">
                         <h3>${item.nome}</h3>
-                        <p>${item.dor_resolvida}</p>
+                        <p class="card-desc">${item.dor_resolvida}</p>
                     </div>
                     <div class="card-footer">
-                        <button class="btn-card-abrir" onclick="abrirModalFerramenta('${item.id}')">Ver Detalhes</button>
+                        <button class="btn-card-abrir" onclick="abrirModalFerramenta('${item.id}')">Explorar Ferramenta</button>
                         <div class="mini-share-bar">
                             <button class="mini-btn zap" onclick="window.open('https://api.whatsapp.com/send?text=${textoShare}%20${linkSite}', '_blank')" aria-label="WhatsApp">Wa</button>
                             <button class="mini-btn in" onclick="window.open('https://www.linkedin.com/sharing/share-offsite/?url=${linkSite}', '_blank')" aria-label="LinkedIn">In</button>
-                            <button class="mini-btn x" onclick="window.open('https://twitter.com/intent/tweet?text=${textoShare}&url=${linkSite}', '_blank')" aria-label="X">X</button>
                             <button class="mini-btn bsky" onclick="window.open('https://bsky.app/intent/compose?text=${textoShare}%20${linkSite}', '_blank')" aria-label="Bluesky">Sky</button>
+                            <button class="mini-btn x" onclick="window.open('https://twitter.com/intent/tweet?text=${textoShare}&url=${linkSite}', '_blank')" aria-label="X">X</button>
                         </div>
                     </div>
                 </article>
                 `;
             }).join('');
 
-            section.innerHTML = `<h2 class="sessao-titulo">${emojiCat} ${cat}</h2><div class="grid-cards">${htmlCards}</div>`;
+            section.innerHTML = `<h2 class="sessao-titulo"><span>${emojiCat}</span> ${cat}</h2><div class="grid-cards">${htmlCards}</div>`;
             listaFerramentas.appendChild(section);
+
+            // ADSENSE DE VOLTA ENTRE AS CATEGORIAS (Exceto na última)
+            if (index < nomesCategorias.length - 1) {
+                const adsHTML = document.createElement('div');
+                adsHTML.className = 'area-adsense ads-home';
+                adsHTML.style.marginBottom = '100px'; // Respiro alinhado ao design
+                adsHTML.style.height = '100px';
+                adsHTML.innerHTML = '<p class="ads-label">Espaço Publicitário</p>';
+                listaFerramentas.appendChild(adsHTML);
+            }
         });
     }
 
@@ -113,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const corpoEmail = encodeURIComponent(`Olá,\n\nO link da ferramenta "${ferramenta.nome}" apresenta erro.\nURL: ${ferramenta.url}`);
         document.getElementById('btn-reportar').href = `mailto:${emailSuporte}?subject=${assunto}&body=${corpoEmail}`;
 
-        // Share no Modal
         const containerBotoes = document.getElementById('botoes-compartilhamento');
         containerBotoes.innerHTML = ''; 
         const linkSite = window.location.href; 
