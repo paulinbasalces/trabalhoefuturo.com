@@ -158,3 +158,17 @@ body.modal-open { overflow: hidden; }
   .share-icons { gap: 8px; }
   .btn-share { padding: 12px; font-size: 0.85rem; flex-grow: 1;}
 }
+/* Ajuste de Botões Sociais com Ícones */
+.btn-social { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 10px; 
+    background: white; 
+    border: 1px solid #e2e8f0; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    transition: 0.2s; 
+}
+.btn-social:hover { background: #f1f5f9; border-color: var(--primary); }
+.btn-social svg { width: 20px; height: 20px; color: var(--text-main); }
