@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let baseDeDados = [];
     let categoriaAtiva = 'Todas';
     const htmlElement = document.documentElement;
-    const SITE_URL = 'https://paulinbasalces.github.io/carreirahub/';
+    const SITE_URL = 'https://trabalhoefuturo.com/';
     const GOOGLE_PROGRAMMABLE_SEARCH_ID = '';
 
     const categoriasMeta = {
