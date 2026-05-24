@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://paulinbasalces.github.io/carreirahub/sitemap.xml
